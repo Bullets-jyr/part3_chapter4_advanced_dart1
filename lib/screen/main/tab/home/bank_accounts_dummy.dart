@@ -1,4 +1,9 @@
+import 'dart:collection';
+
+import 'package:fast_app_base/common/common.dart';
+import 'package:fast_app_base/common/dart/extension/collection_extension.dart';
 import 'package:fast_app_base/screen/main/tab/home/vo/vo_bank_account.dart';
+import 'package:flutter/material.dart';
 
 import 'banks_dummy.dart';
 
@@ -32,12 +37,67 @@ class Cow extends Animal {
 }
 
 main() {
+  // 삽입
+  bankAccounts.insert(1, bankAccountKakao2);
+
+  // 위치 이동
+  // final temp = bankAccounts[4];
+  // bankAccounts.removeAt(4);
+  final temp = bankAccounts.removeAt(4);
+  bankAccounts.insert(0, temp);
+
+  // 교환
+  final temp1 = bankAccounts.last;
+  bankAccounts[5] = bankAccounts[0];
+  bankAccounts[0] = temp1;
+  bankAccounts.swap(0, 5);
+
+  // 변환
+  final banks = bankAccounts.map((e) => e.bank).toList();
+  for (final bank in banks) {
+    print(bank.toString());
+  }
+
+  final banksWithIndex = bankAccounts.mapIndexed((e, index) => Row(children: [(index + 1).text.make()],)).toList();
+  for (final bank in banksWithIndex) {
+    print(bank.toString());
+  }
+
+  for (final account in bankAccounts) {
+    print(account.toString());
+  }
+
+  final map = HashMap<String, BankAccount>();
+  map["ttoss"] = bankAccountToss;
+  map["kakao"] = bankAccountKakao;
+  map.putIfAbsent("kakao", () => bankAccountKakao2);
+  if (!map.containsKey("kakao")) {
+    map["kakao"] = bankAccountKakao2;
+  }
+
+  final ttossAccount = map["ttoss"];
+
+  final banks2 = bankAccounts.map((e) => e.bank).toList();
+
+  final uniqueBanks = banks2.toSet();
+  for (final bank in uniqueBanks) {
+    print(bank.toString());
+  }
+
+  // 생성
+  final list = [];
+
+  final set = {bankAccountShinhan1, bankAccountShinhan2};
+  final map2 = {"shinhan1": bankAccountShinhan1, "shinhan2": bankAccountShinhan2};
+
   //class generic
 
   final result = doTheWork();
   final result2 = doTheWork2();
 
   //method or function generic
+
+  final result4 = doTheWork4<String, Dog>("String", ["dog1", "dog2"]);
 
   final result3 = doTheWork3<Dog>(() => Dog());
   result3.eat();
@@ -59,6 +119,10 @@ class ResultDouble {
   final double data;
 
   ResultDouble(this.data);
+}
+
+Result doTheWork4<T, Result extends Animal>(T data, List<T> genericList) {
+  return Cat() as Result;
 }
 
 Result doTheWork3<Result extends Animal>(Result Function() animalCreator) {
