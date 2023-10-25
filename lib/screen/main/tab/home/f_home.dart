@@ -120,6 +120,15 @@ class _HomeFragmentState extends State<HomeFragment> {
                       //print(result);
                     },
                   ),
+                  BigButton(
+                    "토스뱅크",
+                    onTap: () async {
+                      print('start');
+                      final result = await Nav.push(NumberScreen());
+                      print(result);
+                      print('end');
+                    },
+                  ),
                   height10,
                   RoundedContainer(
                       child: Column(
