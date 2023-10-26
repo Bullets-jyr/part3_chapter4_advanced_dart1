@@ -26,11 +26,18 @@ class HomeFragment extends StatefulWidget {
 }
 
 class _HomeFragmentState extends State<HomeFragment> {
+  int count = 0;
+  // late final stream = countStream(5);
   late final stream = countStream(5).asBroadcastStream();
-  bool isLike = false;
+  // bool isLike = false;
 
   @override
   void initState() {
+    countStream(5).listen((event) {
+      setState(() {
+        count = event;
+      });
+    });
     super.initState();
   }
 
@@ -51,61 +58,114 @@ class _HomeFragmentState extends State<HomeFragment> {
                   bottom: MainScreenState.bottomNavigatorHeight),
               child: Column(
                 children: [
-                  SizedBox(
-                    width: 250,
-                    height: 250,
-                    child: RiveLikeButton(
-                      isLike,
-                      onTapLike: (bool isLike) async {
-                        await veryHeavyComputationWorkWithIsolateSpawn();
-                        setState(() {
-                          this.isLike = isLike;
-                        });
-                      },
-                    ),
-                  ),
+                  // SizedBox(
+                  //   width: 250,
+                  //   height: 250,
+                  //   child: RiveLikeButton(
+                  //     isLike,
+                  //     onTapLike: (bool isLike) async {
+                  //       await veryHeavyComputationWorkWithIsolateSpawn();
+                  //       setState(() {
+                  //         this.isLike = isLike;
+                  //       });
+                  //     },
+                  //   ),
+                  // ),
+                  // StreamBuilder(
+                  //   builder: (context, snapshot) {
+                  //     final count = snapshot.data;
+                  //
+                  //     switch (snapshot.connectionState) {
+                  //       case ConnectionState.active:
+                  //         if (count == null) {
+                  //           return const CircularProgressIndicator();
+                  //         } else {
+                  //           return count.text.size(30).bold.make();
+                  //         }
+                  //
+                  //       case ConnectionState.waiting:
+                  //       case ConnectionState.none:
+                  //         return const CircularProgressIndicator();
+                  //       case ConnectionState.done:
+                  //         return '완료'.text.size(30).bold.make();
+                  //     }
+                  //   },
+                  //   stream: stream,
+                  // ),
+                  // StreamBuilder(
+                  //   builder: (context, snapshot) {
+                  //     final count = snapshot.data;
+                  //
+                  //     switch (snapshot.connectionState) {
+                  //       case ConnectionState.active:
+                  //         if (count == null) {
+                  //           return const CircularProgressIndicator();
+                  //         } else {
+                  //           return count.text.size(30).bold.make();
+                  //         }
+                  //
+                  //       case ConnectionState.waiting:
+                  //       case ConnectionState.none:
+                  //         return const CircularProgressIndicator();
+                  //       case ConnectionState.done:
+                  //         return '완료'.text.size(30).bold.make();
+                  //     }
+                  //   },
+                  //   stream: stream,
+                  // ),
                   StreamBuilder(
+                    stream: countStream(5),
                     builder: (context, snapshot) {
                       final count = snapshot.data;
+                      final status = snapshot.connectionState;
 
                       switch (snapshot.connectionState) {
                         case ConnectionState.active:
                           if (count == null) {
-                            return const CircularProgressIndicator();
+                            return CircularProgressIndicator();
                           } else {
-                            return count.text.size(30).bold.make();
+                            return count!.text.size(30).bold.make();
                           }
-
                         case ConnectionState.waiting:
                         case ConnectionState.none:
-                          return const CircularProgressIndicator();
+                          return CircularProgressIndicator();
                         case ConnectionState.done:
                           return '완료'.text.size(30).bold.make();
                       }
+
+                      if (count == null) {
+                        return CircularProgressIndicator();
+                      }
+                      return count.text.size(30).bold.make();
                     },
-                    stream: stream,
                   ),
                   StreamBuilder(
+                    stream: stream,
                     builder: (context, snapshot) {
                       final count = snapshot.data;
+                      final status = snapshot.connectionState;
 
                       switch (snapshot.connectionState) {
                         case ConnectionState.active:
                           if (count == null) {
-                            return const CircularProgressIndicator();
+                            return CircularProgressIndicator();
                           } else {
-                            return count.text.size(30).bold.make();
+                            return count!.text.size(30).bold.make();
                           }
-
                         case ConnectionState.waiting:
                         case ConnectionState.none:
-                          return const CircularProgressIndicator();
+                          return CircularProgressIndicator();
                         case ConnectionState.done:
                           return '완료'.text.size(30).bold.make();
                       }
+
+                      if (count == null) {
+                        return CircularProgressIndicator();
+                      }
+                      return count.text.size(30).bold.make();
                     },
-                    stream: stream,
                   ),
+                  count.text.size(30).bold.make(),
                   BigButton(
                     "토스뱅크",
                     onTap: () async {
@@ -157,13 +217,27 @@ class _HomeFragmentState extends State<HomeFragment> {
     }
   }
 
+  // Stream<int> countStream(int max) async* {
+  //   await sleepAsync(2.seconds);
+  //   for (int i = 1; i <= max; i++) {
+  //     yield i;
+  //     await sleepAsync(1.seconds);
+  //   }
+  // }
+
   void showSnackbar(BuildContext context) {
     context.showSnackbar('snackbar 입니다.',
         extraButton: Tap(
           onTap: () {
             context.showErrorSnackbar('error');
           },
-          child: '에러 보여주기 버튼'.text.white.size(13).make().centered().pSymmetric(h: 10, v: 5),
+          child: '에러 보여주기 버튼'
+              .text
+              .white
+              .size(13)
+              .make()
+              .centered()
+              .pSymmetric(h: 10, v: 5),
         ));
   }
 
@@ -211,7 +285,8 @@ class _HomeFragmentState extends State<HomeFragment> {
       count += 7;
     }
     debugPrint(count.toString());
-    debugPrint('${DateTime.now().difference(startTime).inMilliseconds / 1000}sec');
+    debugPrint(
+        '${DateTime.now().difference(startTime).inMilliseconds / 1000}sec');
   }
 
   Future<void> veryHeavyComputationWorkWithIsolateSpawn() async {
@@ -238,7 +313,8 @@ class _HomeFragmentState extends State<HomeFragment> {
 
         if (i % 100000000 == 0) {
           port.send(count);
-          debugPrint("${DateTime.now().difference(startTime).inMilliseconds / 1000}sec");
+          debugPrint(
+              "${DateTime.now().difference(startTime).inMilliseconds / 1000}sec");
         }
 
         // if (i % 10000000 == 0) {
@@ -246,8 +322,10 @@ class _HomeFragmentState extends State<HomeFragment> {
         // }
       }
       debugPrint(count.toString());
-      debugPrint("${DateTime.now().difference(startTime).inMilliseconds / 1000}sec");
-    }, progressListenPort.sendPort, onError: errorPort.sendPort, onExit: exitPort.sendPort);
+      debugPrint(
+          "${DateTime.now().difference(startTime).inMilliseconds / 1000}sec");
+    }, progressListenPort.sendPort,
+        onError: errorPort.sendPort, onExit: exitPort.sendPort);
 
     debugPrint('spawn done');
     delay(() {
@@ -273,7 +351,8 @@ class _HomeFragmentState extends State<HomeFragment> {
       }
 
       debugPrint(count.toString());
-      debugPrint("${DateTime.now().difference(startTime).inMilliseconds / 1000}sec");
+      debugPrint(
+          "${DateTime.now().difference(startTime).inMilliseconds / 1000}sec");
       return "Run Isolate Done";
     });
     debugPrint(isolateResult);
